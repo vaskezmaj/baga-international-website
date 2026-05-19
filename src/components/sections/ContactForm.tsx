@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
-type FormState = "idle" | "loading" | "success" | "error";
+import { useRouter } from "next/navigation";
 
 export default function ContactForm() {
-  const [state, setState] = useState<FormState>("idle");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -19,22 +19,10 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState("loading");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setState("success");
-        setForm({ name: "", email: "", phone: "", message: "" });
-      } else {
-        setState("error");
-      }
-    } catch {
-      setState("error");
-    }
+    setLoading(true);
+    // TODO: connect to GHL webhook here
+    // await fetch("https://your-ghl-webhook-url", { method: "POST", body: JSON.stringify(form) });
+    router.push("/thank-you");
   };
 
   return (
@@ -74,104 +62,84 @@ export default function ContactForm() {
 
           {/* Right: form */}
           <div className="bg-white rounded-3xl p-8">
-            {state === "success" ? (
-              <div className="flex flex-col items-center justify-center py-10 text-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-bold text-[var(--color-navy)]">Message Sent!</h3>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  We'll be in touch within 24 hours to schedule your strategy call.
-                </p>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <h3 className="text-lg font-bold text-[var(--color-navy)] mb-2">Tell us about your goals</h3>
+
+              <div>
+                <label htmlFor="name" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
+                  Full Name *
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="John Smith"
+                  className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <h3 className="text-lg font-bold text-[var(--color-navy)] mb-2">Tell us about your goals</h3>
 
-                <div>
-                  <label htmlFor="name" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
-                    Full Name *
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="John Smith"
-                    className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
-                  />
-                </div>
+              <div>
+                <label htmlFor="email" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
+                  Email Address *
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="john@example.com"
+                  className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
+                />
+              </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
-                    Email Address *
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="john@example.com"
-                    className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
-                  />
-                </div>
+              <div>
+                <label htmlFor="phone" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
+                />
+              </div>
 
-                <div>
-                  <label htmlFor="phone" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
-                    Phone Number
-                  </label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
-                  />
-                </div>
+              <div>
+                <label htmlFor="message" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
+                  Tell us about your goals *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="I want to launch my first Amazon product in the home goods category..."
+                  className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition resize-none"
+                />
+              </div>
 
-                <div>
-                  <label htmlFor="message" className="block text-xs font-semibold text-[var(--color-navy)] mb-1.5">
-                    Tell us about your goals *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={4}
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="I want to launch my first Amazon product in the home goods category..."
-                    className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition resize-none"
-                  />
-                </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[var(--color-primary)] text-white font-semibold py-3.5 rounded-xl hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+              >
+                {loading ? "Submitting..." : "Schedule My Free Strategy Call →"}
+              </button>
 
-                {state === "error" && (
-                  <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                    Something went wrong. Please try again or email us directly at bagaintercontinental@gmail.com
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={state === "loading"}
-                  className="w-full bg-[var(--color-primary)] text-white font-semibold py-3.5 rounded-xl hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-60 disabled:cursor-not-allowed text-sm"
-                >
-                  {state === "loading" ? "Sending..." : "Schedule My Free Strategy Call →"}
-                </button>
-
-                <p className="text-xs text-center text-[var(--color-text-muted)]">
-                  We respond within 24 hours. No spam, ever.
-                </p>
-              </form>
-            )}
+              <p className="text-xs text-center text-[var(--color-text-muted)]">
+                We respond within 24 hours. No spam, ever.
+              </p>
+            </form>
           </div>
         </div>
       </div>
