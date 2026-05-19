@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function ContactForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -110,6 +111,24 @@ export default function ContactForm() {
                   placeholder="+1 (555) 000-0000"
                   className="w-full border border-[var(--color-gray-mid)] rounded-xl px-4 py-3 text-sm text-[var(--color-navy)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] transition"
                 />
+              </div>
+
+              {/* SMS Consent */}
+              <div className="flex items-start gap-3 bg-[var(--color-gray-light)] rounded-xl px-4 py-3">
+                <input
+                  id="sms-consent"
+                  type="checkbox"
+                  required
+                  checked={smsConsent}
+                  onChange={(e) => setSmsConsent(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 flex-shrink-0 accent-[var(--color-primary)] cursor-pointer"
+                />
+                <label htmlFor="sms-consent" className="text-xs text-[var(--color-text-muted)] leading-relaxed cursor-pointer">
+                  By checking this box, I consent to receive SMS messages, calls, and emails from Baga Intercontinental LLC regarding my inquiry and FBA services. Message & data rates may apply. Reply STOP to opt out at any time. See our{" "}
+                  <a href="/terms" target="_blank" className="text-[var(--color-primary)] underline hover:no-underline">Terms & Conditions</a>{" "}
+                  and{" "}
+                  <a href="/privacy" target="_blank" className="text-[var(--color-primary)] underline hover:no-underline">Privacy Policy</a>.
+                </label>
               </div>
 
               <div>
