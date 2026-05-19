@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -10,13 +9,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-white/10">
           {/* Logo & tagline */}
           <div className="flex flex-col gap-4">
-            <Image
-              src="/logo.png"
-              alt="Baga Intercontinental LLC"
-              width={150}
-              height={38}
-              className="h-9 w-auto brightness-0 invert"
-            />
+            <span className="text-xl font-bold text-white tracking-tight">
+              Baga Intercontinental
+            </span>
             <p className="text-sm text-white/60 leading-relaxed max-w-xs">
               Your end-to-end Amazon FBA partner. From product research to performance management.
             </p>

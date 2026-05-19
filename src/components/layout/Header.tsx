@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -13,14 +12,9 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Baga Intercontinental LLC"
-              width={160}
-              height={40}
-              className="h-10 w-auto"
-              priority
-            />
+            <span className="text-xl font-bold text-[var(--color-navy)] tracking-tight">
+              Baga Intercontinental
+            </span>
           </Link>
 
           {/* Desktop Nav */}
